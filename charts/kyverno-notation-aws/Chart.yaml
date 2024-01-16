@@ -1,6 +1,7 @@
 apiVersion: v2
 type: application
-name: kyverno-notation-aws
+# Name needs to follow repository name within the OCI registry
+name: vponoiko_test_com-mgmt-ecr-kyverno-notation-aws
 version: v1-rc.1
 appVersion: latest
 description: Kyverno extension service for Notation and the AWS signer
