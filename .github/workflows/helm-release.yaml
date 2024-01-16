@@ -1,20 +1,29 @@
 name: helm-release
 on:
   push:
-    tags:
-      - 'kyverno-notation-aws-chart-v*'
+    branches:
+      - 'release-*'
 
 jobs:
   create-release:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - name: Checkout
-        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
-      - name: Install Helm
-        uses: azure/setup-helm@5119fcb9089d432beecbf79bb2c7915207344b78 # v3.5
-        with:
-          version: v3.10.3
-      - name: Run chart-releaser
-        uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 #v1.7.0
-        with:
-          token: "${{ secrets.GITHUB_TOKEN }}"
+      - uses: actions/checkout@v4
+      - name: Install | helm
+        run: |
+          HELM_VERSION=$(curl -Ls https://github.com/helm/helm/releases | grep 'href="/helm/helm/releases/tag/v3.[0-9]*.[0-9]*\"' | sed -E 's/.*\/helm\/helm\/releases\/tag\/(v[0-9\.]+)".*/\1/g' | head -1)
+          sudo wget -q https://get.helm.sh/helm-$HELM_VERSION-linux-amd64.tar.gz -O - | tar -xzO linux-amd64/helm > helm
+          sudo mv helm /usr/local/bin/helm
+          sudo chmod +x /usr/local/bin/helm
+      - name: Build | Login to ECR
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+      - name: Build | Package helm
+        run: |
+          helm package \
+          charts/kyverno-notation-aws \
+          --app-version ${GITHUB_SHA} \
+          --version ${GITHUB_SHA}
+      - name: Release | Helm Chart
+        run : |
+          helm push "kyverno-notation-aws-${GITHUB_SHA}.tgz" oci://${{ vars.ECR_REPOSITORY }}
+        shell: bash
