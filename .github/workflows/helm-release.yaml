@@ -35,6 +35,6 @@ jobs:
         env:
           HELM_EXPERIMENTAL_OCI: 1
         run : |
+          aws ecr get-login-password --region ${{ vars.AWS_REGION }} | helm registry login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com;           
           ls;
           HELM_DEBUG=true helm push "kyverno-notation-aws-${HELM_RELEASE_VERSION}.tgz" oci://${{ vars.ECR_REPOSITORY }}
-        shell: bash
