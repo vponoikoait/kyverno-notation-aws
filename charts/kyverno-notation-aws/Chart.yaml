@@ -1,6 +1,6 @@
 apiVersion: v2
 type: application
-name: kyverno-notation-aws
+name: 310008400154.dkr.ecr.eu-west-1.amazonaws.com/vponoiko_test_com-mgmt-ecr-kyverno-notation-aws
 version: v1-rc.1
 appVersion: latest
 description: Kyverno extension service for Notation and the AWS signer
