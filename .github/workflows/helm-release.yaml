@@ -4,7 +4,7 @@ on:
     branches:
       - 'release-*'
 env:
-  HELM_RELEASE_VERSION: 0.0.3
+  HELM_RELEASE_VERSION: 0.0.4
 
 jobs:
   create-release:
@@ -47,3 +47,6 @@ jobs:
           export AWS_REGION=${{ vars.AWS_REGION }}
           cosign generate-key-pair --kms awskms:///alias/${{ secrets.AWS_CMK_ID }}
           cosign sign --key awskms:///alias/${{ secrets.AWS_CMK_ID }} ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.ECR_REPOSITORY_NAME }}:${HELM_RELEASE_VERSION} --upload=true --tlog-upload=false
+      - name: Sign Image | Cosign Verify Image
+        run: |
+          cosign verify --key awskms:///alias/${{ secrets.AWS_CMK_ID }} ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com/${{ vars.ECR_REPOSITORY_NAME }}:${HELM_RELEASE_VERSION} --private-infrastructure
