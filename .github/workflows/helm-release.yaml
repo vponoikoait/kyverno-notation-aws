@@ -26,8 +26,8 @@ jobs:
         run: |
           helm package \
           charts/kyverno-notation-aws \
-          --app-version ${GITHUB_SHA} \
-          --version ${GITHUB_SHA}
+          --app-version 0.0.1 \
+          --version 0.0.1
       - name: Release | Helm Chart
         run : |
           helm push "kyverno-notation-aws-${GITHUB_SHA}.tgz" oci://${{ vars.ECR_REPOSITORY }}
