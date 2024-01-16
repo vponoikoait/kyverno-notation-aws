@@ -32,7 +32,9 @@ jobs:
           --version $HELM_RELEASE_VERSION
           ls
       - name: Release | Helm Chart
+        env:
+          HELM_EXPERIMENTAL_OCI: 1
         run : |
           ls;
-          helm push "kyverno-notation-aws-${HELM_RELEASE_VERSION}.tgz" oci://${{ vars.ECR_REPOSITORY }}
+          HELM_DEBUG=true helm push "kyverno-notation-aws-${HELM_RELEASE_VERSION}.tgz" oci://${{ vars.ECR_REPOSITORY }}
         shell: bash
