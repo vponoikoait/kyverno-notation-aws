@@ -23,18 +23,16 @@ jobs:
           sudo mv helm /usr/local/bin/helm
           sudo chmod +x /usr/local/bin/helm
       - name: Build | Login to ECR
-        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | docker login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
+        run: aws ecr get-login-password --region ${{ vars.AWS_REGION }} | helm registry login --username AWS --password-stdin ${{ vars.AWS_ACCOUNT_ID }}.dkr.ecr.${{ vars.AWS_REGION }}.amazonaws.com
       - name: Build | Package helm
         run: |
-          cd charts/kyverno-notation-aws
           helm package \
-          . \
+          charts/kyverno-notation-aws \
           --app-version $HELM_RELEASE_VERSION \
           --version $HELM_RELEASE_VERSION
           ls
       - name: Release | Helm Chart
         run : |
-          ls 
-          cd charts/kyverno-notation-aws;
+          ls ;
           helm push "310008400154.dkr.ecr.eu-west-1.amazonaws.com/vponoiko_test_com-mgmt-ecr-kyverno-notation-aws-${HELM_RELEASE_VERSION}.tgz" oci://${{ vars.ECR_REPOSITORY }}
         shell: bash
