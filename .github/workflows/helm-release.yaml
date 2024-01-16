@@ -3,6 +3,8 @@ on:
   push:
     branches:
       - 'release-*'
+env:
+  HELM_RELEASE_VERSION: 0.0.1
 
 jobs:
   create-release:
@@ -26,9 +28,9 @@ jobs:
         run: |
           helm package \
           charts/kyverno-notation-aws \
-          --app-version 0.0.1 \
-          --version 0.0.1
+          --app-version $HELM_RELEASE_VERSION \
+          --version $HELM_RELEASE_VERSION
       - name: Release | Helm Chart
         run : |
-          helm push "kyverno-notation-aws-${GITHUB_SHA}.tgz" oci://${{ vars.ECR_REPOSITORY }}
+          helm push "kyverno-notation-aws-${HELM_RELEASE_VERSION}.tgz" oci://${{ vars.ECR_REPOSITORY }}
         shell: bash
