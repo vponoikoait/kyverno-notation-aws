@@ -9,6 +9,8 @@ env:
 jobs:
   create-release:
     runs-on: self-hosted
+    needs:
+      - build-images
     steps:
       - uses: actions/checkout@v4
       - name: Install | AWS CLI v2
