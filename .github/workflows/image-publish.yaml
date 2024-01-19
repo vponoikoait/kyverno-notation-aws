@@ -6,6 +6,7 @@ on:
   push:
     branches:
       - 'main'
+      - 'build-image'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -29,9 +30,9 @@ jobs:
       - name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: registry-1.docker.io/v1
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
       - name: Run Trivy vulnerability scanner in repo mode
         uses: aquasecurity/trivy-action@2b6a709cf9c4025c5438138008beaddbb02086f0 # v0.14.0
         with:
@@ -45,14 +46,16 @@ jobs:
       - name: Publish image
         id: publish-kyverno-notation-aws
         uses: ./.github/actions/publish-image
+        env:
+          DOCKERHUB_ACCESS_TOKEN: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
         with:
           makefile-target: docker-publish
-          registry: ghcr.io
+          registry: registry-1.docker.io/v1
           registry-username: ${{ github.actor }}
-          registry-password: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ github.repository_owner }}
+          registry-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}
+          repository: vponoikoait/kyverno-notation-verifier
           version: ${{ github.ref_name }}
-          sign-image: true
+          sign-image: false
           sbom-name: kyverno-notation-aws
           sbom-repository: ghcr.io/${{ github.repository }}/sbom
           signature-repository: ghcr.io/${{ github.repository }}/signatures
@@ -68,8 +71,8 @@ jobs:
     # NOTE: The container generator workflow is not officially released as GA.
     uses: slsa-framework/slsa-github-generator/.github/workflows/generator_container_slsa3.yml@v1.9.0
     with:
-      image: ghcr.io/${{ github.repository_owner }}/kyverno-notation-aws
+      image: docker.io/${{ github.repository_owner }}/kyverno-notation-aws
       digest: "${{ needs.publish-images.outputs.image-digest }}"
       registry-username: ${{ github.actor }}
     secrets:
-      registry-password: ${{ secrets.GITHUB_TOKEN }}
+      registry-password: ${{ secrets.DOCKERHUB_ACCESS_TOKEN }}

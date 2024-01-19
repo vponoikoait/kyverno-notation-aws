@@ -86,7 +86,7 @@ func main() {
 	flag.Int64Var(&cacheTTLDuration, "cacheTTLDurationSeconds", int64(1*time.Hour), "Max TTL value for a cache in seconds, default is 1 hour.")
 
 	var reviewKyvernoToken bool
-	flag.BoolVar(&reviewKyvernoToken, "reviewKyvernoToken", true, "Checks if the Auth token in the request is a token from kyverno admission controller, default is true")
+	flag.BoolVar(&reviewKyvernoToken, "reviewKyvernoToken", false, "Checks if the Auth token in the request is a token from kyverno admission controller, default is true")
 
 	flag.Parse()
 	zc := zap.NewDevelopmentConfig()

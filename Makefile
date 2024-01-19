@@ -113,10 +113,9 @@ docker-build:
 docker-publish:
 	@echo Build kyverno-notation-aws image with docker... >&2
 	GOOS=$(GOOS) GOARCH=$(GOARCH) CGO_ENABLED=0 LD_FLAGS=$(LD_FLAGS) go build -o kyverno-notation-aws .
-	docker buildx build --platform linux/arm64/v8 -t $(REPO_IMAGE):$(IMAGE_TAG_LATEST) --load .
-	docker tag $(REPO_IMAGE):$(IMAGE_TAG_LATEST) $(REPO_IMAGE):$(IMAGE_TAG_SHA)
-	docker push $(REPO_IMAGE):$(IMAGE_TAG_SHA)
-	docker push $(REPO_IMAGE):$(IMAGE_TAG_LATEST)
+	echo "${DOCKERHUB_ACCESS_TOKEN}" |  docker login --username vponoikoait --password-stdin
+	docker buildx build --platform linux/arm64/v8 -t vponoikoait/kyverno-notation-verifier:0.0.1 --load .
+	docker push vponoikoait/kyverno-notation-verifier:0.0.1
 
 ########
 # HELM #
