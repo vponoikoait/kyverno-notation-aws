@@ -7,6 +7,9 @@ fullnameOverride: ~
 # -- (string) Override the namespace the chart deploys to
 namespaceOverride: ~
 
+image:
+  tag: 1a0f80628ae353182dbd635ef1349abc75b030a5
+
 # CRDs configuration
 crds:
 
