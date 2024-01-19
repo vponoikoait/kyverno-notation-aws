@@ -8,6 +8,7 @@ fullnameOverride: ~
 namespaceOverride: ~
 
 image:
+  repository: ghcr.io/nirmata/kyverno-notation-aws
   tag: 1a0f80628ae353182dbd635ef1349abc75b030a5
 
 # CRDs configuration
