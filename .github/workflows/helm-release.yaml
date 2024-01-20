@@ -4,7 +4,7 @@ on:
     branches:
       - 'release-*'
 env:
-  HELM_RELEASE_VERSION: 0.0.7
+  HELM_RELEASE_VERSION: 0.0.8
 
 jobs:
   create-release:
